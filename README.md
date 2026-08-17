@@ -18,5 +18,12 @@ Once the code has served its purpose, it either sits here collecting digital dus
 ## 📂 Structure
 There are no strict rules. Folders are usually created on a whim based on whatever language, framework, or concept I am messing with that day.
 
----
 *Feel free to poke around, but lower your expectations first!*
+
+<pre>
+.
+└── <a href="./ds-alogo-problem-solving/">ds-alogo-problem-solving/</a>
+    └── <a href="./ds-alogo-problem-solving/linked_list/">linked list/</a>
+        ├── <a href="./ds-alogo-problem-solving/linked_list/tests/">tests/</a>
+        └── <a href="./ds-alogo-problem-solving/linked_list/linked_list.py">linked_list.py</a>
+</pre>
