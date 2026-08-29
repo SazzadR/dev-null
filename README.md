@@ -28,4 +28,5 @@ There are no strict rules. Folders are usually created on a whim based on whatev
         ├── <a href="./ds-alogo-problem-solving/linked_list/tests/">tests/</a>
         └── <a href="./ds-alogo-problem-solving/linked_list/linked_list.py">linked_list.py</a>
 └── <a href="./c/">Random C codes</a>
+└── <a href="./python/">Random Python codes</a>
 </pre>
