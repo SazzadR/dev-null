@@ -32,17 +32,15 @@ class LinkedList:
                 temp = temp.next
             print(" -> ".join(values))
 
-    def remove_duplicates(self):
-        current = self.head
+    def reverse(self):
         previous = None
-
-        unique_values = set()
+        current = self.head
 
         while current:
-            if current.value in unique_values:
-                previous.next = current.next
-            else:
-                previous = current
+            temp = current.next
 
-            unique_values.add(current.value)
-            current = current.next
+            current.next = previous
+            previous = current
+            current = temp
+
+        self.head = previous
