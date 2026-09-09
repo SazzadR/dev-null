@@ -1,7 +1,7 @@
 """create user and post table
 
 Revision ID: 9adea9861ace
-Revises: 
+Revises:
 Create Date: 2026-09-09 16:57:35.642674
 
 """
@@ -25,7 +25,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('username', sa.String(length=50), nullable=False),
     sa.Column('email', sa.String(length=120), nullable=False),
-    sa.Column('image_file', sa.String(length=200), nullable=True),
+    sa.Column('profile_picture', sa.String(length=200), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email'),
     sa.UniqueConstraint('username')
