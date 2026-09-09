@@ -1,21 +1,35 @@
 from datetime import date
-from typing import List
+from os import name
+from turtle import pd
+from typing import List, Annotated
 
-from fastapi import FastAPI, HTTPException, Request, status
+from fastapi import FastAPI, HTTPException, Request, status, Depends
 from fastapi.exceptions import RequestValidationError, StarletteHTTPException
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from sqlalchemy import select, or_
+from sqlalchemy.orm import Session
 
-from schemas import PostCreate, PostResponse
+from database import get_db
+from models import User
+from schemas import (
+    ErrorResponse400,
+    ErrorResponse404,
+    PostCreate,
+    PostResponse,
+    UserCreate,
+    UserResponse,
+)
 
+SessionDepedency = Annotated[Session, Depends(get_db)]
 app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
 
-posts: list[dict] = [
+posts: List[dict] = [
     {
         "id": 1,
         "title": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
@@ -49,6 +63,54 @@ def get_post_page(request: Request, post_id: int):
                 request, "post.html", {"post": post, "title": title}
             )
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
+
+
+@app.post(
+    "/api/users",
+    response_model=UserResponse,
+    status_code=status.HTTP_201_CREATED,
+    responses={400: {"model": ErrorResponse400}},
+)
+def user_create(user: UserCreate, session: SessionDepedency):
+    exists = session.scalar(
+        select(
+            select(User.id)
+            .where(or_(User.username == user.username, User.email == user.email))
+            .exists()
+        )
+    )
+    if exists:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="username or email already exists",
+        )
+
+    new_user = User(
+        username=user.username,
+        email=user.email,
+    )
+    session.add(new_user)
+    session.commit()
+    session.refresh(new_user)
+
+    return new_user
+
+
+@app.post(
+    "/api/users/{user_id}",
+    response_model=UserResponse,
+    status_code=status.HTTP_200_OK,
+    responses={404: {"model": ErrorResponse404}},
+)
+def user_get(user_id: int, session: SessionDepedency):
+    user = session.scalar(select(User).where(User.id == user_id))
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found.",
+        )
+
+    return user
 
 
 @app.get("/api/posts", response_model=List[PostResponse])
