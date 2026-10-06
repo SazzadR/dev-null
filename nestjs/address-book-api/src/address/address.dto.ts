@@ -1,16 +1,21 @@
 import { ApiProperty, OmitType } from '@nestjs/swagger';
+import { IsDate, IsNumber, IsString } from 'class-validator';
 
 export class AddressDto {
   @ApiProperty({ description: 'Unique identifier of the address', example: 1, type: 'integer' })
+  @IsNumber()
   id: number;
 
   @ApiProperty({ description: 'Street address', example: '123 Queen Street' })
+  @IsString()
   addressLine: string;
 
   @ApiProperty({ description: 'Postal code', example: 4000, type: 'integer' })
+  @IsNumber()
   postCode: number;
 
   @ApiProperty({ description: 'State or region code', example: 'QLD' })
+  @IsString()
   state: string;
 
   @ApiProperty({
@@ -19,6 +24,7 @@ export class AddressDto {
     type: String,
     format: 'date-time',
   })
+  @IsDate()
   createdAt: Date;
 }
 

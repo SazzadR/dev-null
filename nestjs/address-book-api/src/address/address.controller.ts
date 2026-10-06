@@ -10,6 +10,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UsePipes,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -24,6 +25,7 @@ import {
 } from '@nestjs/swagger';
 import { AddressService } from './address.service.js';
 import { AddressDto, CreateAddressDto, UpdateAddressDto } from './address.dto.js';
+import { AddressValidationPipe } from './address.validation.js';
 
 @ApiTags('Address')
 @Controller('address')
@@ -64,6 +66,7 @@ export class AddressController {
   @ApiOperation({ summary: 'Create an address' })
   @ApiBody({ type: CreateAddressDto })
   @ApiCreatedResponse({ description: 'Address created successfully', type: AddressDto })
+  @UsePipes(AddressValidationPipe)
   @Post()
   create(@Body() address: CreateAddressDto) {
     return this.addressService.create(address);
