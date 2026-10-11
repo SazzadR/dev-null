@@ -25,7 +25,8 @@ services:
             WEBUI_ADMIN_EMAIL: "${WEBUI_ADMIN_EMAIL:?Set WEBUI_ADMIN_EMAIL in .env}"
             WEBUI_ADMIN_PASSWORD: "${WEBUI_ADMIN_PASSWORD:?Set WEBUI_ADMIN_PASSWORD in .env}"
             WEBUI_ADMIN_NAME: "Administrator"
-            ENABLE_OPENAI_API: "${ENABLE_OPENAI_API:-False}"
+            ENABLE_OPENAI_API: "${ENABLE_OPENAI_API:-True}"
+            ENABLE_OLLAMA_API: "${ENABLE_OLLAMA_API:-False}"
             OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
             TOOL_SERVER_CONNECTIONS: >-
                 [{
@@ -46,11 +47,10 @@ services:
         depends_on:
             image-generation-mcp:
                 condition: service_healthy
-            ollama:
-                condition: service_healthy
 
     ollama:
         image: ollama/ollama:latest
+        profiles: [ "local-llm" ]
         restart: unless-stopped
         env_file:
             - ./config/ollama.env
