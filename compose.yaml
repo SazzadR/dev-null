@@ -1,32 +1,41 @@
 services:
+    image-generation-mcp:
+        build: ./image-mcp
+        restart: unless-stopped
+        environment:
+            OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
+            OPENAI_IMAGE_MODEL: "${OPENAI_IMAGE_MODEL:-gpt-image-2.5-flare}"
+        healthcheck:
+            test: [ "CMD", "python", "-c", "import socket; socket.create_connection(('127.0.0.1', 8000), 2).close()" ]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+            start_period: 10s
+
     open-webui:
         image: ghcr.io/open-webui/open-webui:slim
         restart: unless-stopped
         ports:
             - "127.0.0.1:3000:8080"
+        env_file:
+            - ./config/openwebui.env
         environment:
-            OLLAMA_BASE_URL: "http://ollama:11434"
+            WEBUI_SECRET_KEY: "${WEBUI_SECRET_KEY:?Set WEBUI_SECRET_KEY in .env}"
             ENABLE_OPENAI_API: "${ENABLE_OPENAI_API:-False}"
             OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
-            OPENAI_API_BASE_URL: "https://api.openai.com/v1"
-            ENABLE_PERSISTENT_CONFIG: "False"
-            DEFAULT_MODEL_METADATA: >-
-                {"capabilities":{"file_context":false,"vision":false,"file_upload":false,"web_search":false,"image_generation":false,"code_interpreter":false,"terminal":false,"citations":false,"status_updates":false,"usage":false,"memory":false,"builtin_tools":false},"toolIds":[],"filterIds":[],"actionIds":[],"skillIds":[],"defaultFeatureIds":[],"suggestion_prompts":[]}
         volumes:
             - open-webui-data:/app/backend/data
         depends_on:
+            image-generation-mcp:
+                condition: service_healthy
             ollama:
                 condition: service_healthy
 
     ollama:
         image: ollama/ollama:latest
         restart: unless-stopped
-        environment:
-            OLLAMA_HOST: "0.0.0.0:11434"
-            OLLAMA_CONTEXT_LENGTH: "4096"
-            OLLAMA_NUM_PARALLEL: "1"
-            OLLAMA_MAX_LOADED_MODELS: "1"
-            OLLAMA_KEEP_ALIVE: "-1"
+        env_file:
+            - ./config/ollama.env
         volumes:
             - ollama-data:/root/.ollama
         deploy:
