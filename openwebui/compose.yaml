@@ -1,0 +1,75 @@
+services:
+    image-generation-mcp:
+        build: ./image-mcp
+        restart: unless-stopped
+        environment:
+            OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
+            OPENAI_IMAGE_MODEL: "${OPENAI_IMAGE_MODEL:-gpt-image-2.5-flare}"
+            IMAGE_MCP_API_KEY: "${IMAGE_MCP_API_KEY:?Set IMAGE_MCP_API_KEY in .env}"
+        healthcheck:
+            test: [ "CMD", "python", "-c", "import socket; socket.create_connection(('127.0.0.1', 8000), 2).close()" ]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+            start_period: 10s
+
+    open-webui:
+        image: ghcr.io/open-webui/open-webui:slim
+        restart: unless-stopped
+        ports:
+            - "127.0.0.1:3000:8080"
+        env_file:
+            - ./config/openwebui.env
+        environment:
+            WEBUI_SECRET_KEY: "${WEBUI_SECRET_KEY:?Set WEBUI_SECRET_KEY in .env}"
+            WEBUI_ADMIN_EMAIL: "${WEBUI_ADMIN_EMAIL:?Set WEBUI_ADMIN_EMAIL in .env}"
+            WEBUI_ADMIN_PASSWORD: "${WEBUI_ADMIN_PASSWORD:?Set WEBUI_ADMIN_PASSWORD in .env}"
+            WEBUI_ADMIN_NAME: "Administrator"
+            ENABLE_OPENAI_API: "${ENABLE_OPENAI_API:-True}"
+            ENABLE_OLLAMA_API: "${ENABLE_OLLAMA_API:-False}"
+            OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
+            TOOL_SERVER_CONNECTIONS: >-
+                [{
+                    "type": "mcp",
+                    "url": "http://image-generation-mcp:8000/mcp",
+                    "path": "openapi.json",
+                    "auth_type": "bearer",
+                    "key": "${IMAGE_MCP_API_KEY:?Set IMAGE_MCP_API_KEY in .env}",
+                    "config": {"enable": true},
+                    "info": {
+                        "id": "image_generation",
+                        "name": "Image Generation",
+                        "description": "Generate images with GPT Image"
+                    }
+                }]
+        volumes:
+            - open-webui-data:/app/backend/data
+        depends_on:
+            image-generation-mcp:
+                condition: service_healthy
+
+    ollama:
+        image: ollama/ollama:latest
+        profiles: [ "local-llm" ]
+        restart: unless-stopped
+        env_file:
+            - ./config/ollama.env
+        volumes:
+            - ollama-data:/root/.ollama
+        deploy:
+            resources:
+                reservations:
+                    devices:
+                        -   driver: nvidia
+                            count: 1
+                            capabilities: [ gpu ]
+        healthcheck:
+            test: [ "CMD", "ollama", "list" ]
+            interval: 10s
+            timeout: 5s
+            retries: 10
+            start_period: 20s
+
+volumes:
+    open-webui-data:
+    ollama-data:
