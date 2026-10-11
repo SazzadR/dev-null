@@ -1,6 +1,6 @@
 # Service configuration
 
-- `openwebui.env`: provider connections, image MCP registration, model capabilities, and the default system prompt.
+- `openwebui.env`: provider connections, model capabilities, and the default system prompt.
 - `ollama.env`: Ollama runtime settings.
 - Root `.env`: private credentials and local options listed in `.env.example`.
 
@@ -12,6 +12,10 @@ precedence over its `env_file` values.
 Keep secrets out of this directory: these files are committed to Git. Use
 single-quoted multiline strings for JSON settings. Escape an embedded single
 quote as `\'`.
+
+The image MCP registration lives in `compose.yaml` so Compose can inject the
+`IMAGE_MCP_API_KEY` bearer token from the root `.env`. Generate the token with
+`openssl rand -hex 32`; requests without the same token are rejected.
 
 From the repository root, validate and apply changes:
 
