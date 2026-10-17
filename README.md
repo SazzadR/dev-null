@@ -29,6 +29,10 @@ There are no strict rules. Folders are usually created on a whim based on whatev
         ├── <a href="./ds-alogo-problem-solving/linked_list/tests/">tests/</a>
         └── <a href="./ds-alogo-problem-solving/linked_list/linked_list.py">linked_list.py</a>
 └── <a href="./c/">Random C codes</a>
+└── <a href="./k8s/">Kubernetes experiments</a>
+    ├── <a href="./k8s/pods/">Pods</a>
+    ├── <a href="./k8s/deployments/">Deployments</a>
+    └── <a href="./k8s/services/">Services with Minikube</a>
 └── <a href="./nestjs/">NestJS experiments</a>
 └── <a href="./openwebui/">Open WebUI experiments</a>
 └── <a href="./python/">Random Python codes</a>
