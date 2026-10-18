@@ -22,21 +22,12 @@ There are no strict rules. Folders are usually created on a whim based on whatev
 
 <pre>
 .
-├── <a href="./ai-engineering/">AI engineering experiments</a>
-├── <a href="./ds-alogo-problem-solving/">ds-alogo-problem-solving/</a>
-│   ├── <a href="./ds-alogo-problem-solving/leetcode/">LeetCode/</a>
-│   └── <a href="./ds-alogo-problem-solving/linked_list/">linked list/</a>
-│       ├── <a href="./ds-alogo-problem-solving/linked_list/tests/">tests/</a>
-│       └── <a href="./ds-alogo-problem-solving/linked_list/linked_list.py">linked_list.py</a>
-├── <a href="./c/">Random C codes</a>
-├── <a href="./k8s/">Kubernetes experiments</a>
-│   ├── <a href="./k8s/pods/">Pods</a>
-│   ├── <a href="./k8s/deployments/">Deployments</a>
-│   ├── <a href="./k8s/services/">Services with Minikube</a>
-│   ├── <a href="./k8s/ingress/">Ingress with Traefik</a>
-│   ├── <a href="./k8s/configmap/">ConfigMaps</a>
-│   └── <a href="./k8s/secrets/">Secrets</a>
-├── <a href="./nestjs/">NestJS experiments</a>
-├── <a href="./openwebui/">Open WebUI experiments</a>
-└── <a href="./python/">Random Python codes</a>
+├── <a href="./ai-engineering/">AI agents, RAG, and tool-calling experiments</a>
+├── <a href="./c/">C language exercises</a>
+├── <a href="./ds-alogo-problem-solving/">Data structures and LeetCode solutions</a>
+├── <a href="./k8s/">Kubernetes and Minikube experiments</a>
+├── <a href="./nestjs/">NestJS applications</a>
+├── <a href="./observability/">Prometheus and monitoring experiments</a>
+├── <a href="./openwebui/">Open WebUI and image-generation integration</a>
+└── <a href="./python/">Async, concurrency, FastAPI, and general Python exercises</a>
 </pre>
