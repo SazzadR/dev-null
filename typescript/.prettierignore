@@ -1,0 +1,7 @@
+**/node_modules/
+**/dist/
+**/build/
+**/out/
+**/.parcel-cache/
+**/coverage/
+**/package-lock.json

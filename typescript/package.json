@@ -1,0 +1,11 @@
+{
+  "name": "typescript-projects",
+  "private": true,
+  "scripts": {
+    "format": "prettier --write maps",
+    "format:check": "prettier --check maps"
+  },
+  "devDependencies": {
+    "prettier": "3.9.10"
+  }
+}
