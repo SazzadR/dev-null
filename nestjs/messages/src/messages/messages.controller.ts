@@ -1,29 +1,36 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { CreateMessageDto } from './dto.js';
+import { MessagesService } from './messages.service.js';
+import type { MessageInterface } from './message.interface.js';
 
 @Controller('messages')
 export class MessagesController {
+  constructor(public messagesService: MessagesService) {}
+
   @Get()
-  listMessages(): { id: number; message: string }[] {
-    return [
-      {
-        id: 1,
-        message: 'message 1',
-      },
-    ];
+  listMessages(): Promise<MessageInterface[]> {
+    return this.messagesService.listMessages();
   }
 
   @Get(':id')
-  getMessage(@Param('id') id: number): { id: number; message: string } {
-    return {
-      id: id,
-      message: 'message 1',
-    };
+  async getMessage(@Param('id') id: string): Promise<MessageInterface> {
+    const message = await this.messagesService.getMessage(id);
+    if (!message) {
+      throw new NotFoundException();
+    }
+
+    return message;
   }
 
   @Post()
-  createMessage(@Body() createMessageDto: CreateMessageDto) {
-    console.log(createMessageDto);
-    return 'Message created successfully.';
+  createMessage(@Body() createMessageDto: CreateMessageDto): Promise<MessageInterface> {
+    return this.messagesService.createMessage(createMessageDto);
   }
 }
